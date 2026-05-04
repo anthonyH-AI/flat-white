@@ -277,17 +277,41 @@ function renderProfiles() {
 }
 
 function extractBagDetails(text) {
-  const lower = text.toLowerCase();
+  const cleanText = text.replace(/\s+/g, " ").trim();
+  const lower = cleanText.toLowerCase();
   const knownOrigins = ["ethiopia", "colombia", "kenya", "brazil", "guatemala", "rwanda", "costa rica", "panama", "peru", "honduras"];
   const knownProcesses = ["washed", "natural", "honey", "anaerobic", "pulped natural", "carbonic"];
-  const knownVarieties = ["bourbon", "typica", "caturra", "castillo", "gesha", "heirloom", "pacamara", "sl28", "sl34"];
-  const notes = ["blueberry", "jasmine", "citrus", "peach", "caramel", "orange", "chocolate", "cherry", "nougat", "floral", "blackcurrant", "vanilla"].filter((note) => lower.includes(note));
-  const origin = knownOrigins.find((item) => lower.includes(item)) || "Origin not found";
-  const process = knownProcesses.find((item) => lower.includes(item)) || "Process not found";
-  const variety = knownVarieties.find((item) => lower.includes(item)) || "Variety not found";
-  const roast = ["light", "medium", "dark"].find((item) => lower.includes(`${item} roast`)) || "Roast not found";
-  const roaster = text.split(",")[0].replace(/coffee|roasters/ig, "").trim() || "Roaster not found";
-  return { roaster, origin, process, variety, roast, notes: notes.join(", ") || "Taste notes not found" };
+  const knownVarieties = ["bourbon", "typica", "caturra", "castillo", "gesha", "geisha", "heirloom", "pacamara", "sl28", "sl34", "catuai", "maragogipe"];
+  const knownRegions = ["guji", "yirgacheffe", "sidamo", "huila", "cauca", "narino", "nyeri", "kirinyaga", "cerrado", "antigua", "tarrazu"];
+  const notes = ["blueberry", "jasmine", "citrus", "peach", "caramel", "orange", "chocolate", "cherry", "nougat", "floral", "blackcurrant", "vanilla", "strawberry", "plum", "almond", "hazelnut", "molasses", "lime", "bergamot"].filter((note) => lower.includes(note));
+  const country = knownOrigins.find((item) => lower.includes(item));
+  const region = knownRegions.find((item) => lower.includes(item));
+  const origin = [country, region].filter(Boolean).map(titleCase).join(" • ") || "Origin not found";
+  const process = titleCase(knownProcesses.find((item) => lower.includes(item)) || "Process not found");
+  const variety = titleCase(knownVarieties.find((item) => lower.includes(item)) || "Variety not found").replace("Sl", "SL");
+  const roastMatch = ["light", "medium-light", "medium", "medium-dark", "dark"].find((item) => lower.includes(`${item} roast`) || lower.includes(`${item} roasted`));
+  const roaster = cleanText.split(/[,\n]/)[0].replace(/\b(coffee|roasters|roastery|specialty|speciality)\b/ig, "").trim() || "Roaster not found";
+  return { roaster, origin, process, variety, roast: titleCase(roastMatch || "Roast not found"), notes: notes.map(titleCase).join(", ") || "Taste notes not found" };
+}
+
+function titleCase(value) {
+  return value.replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function renderScanResult(details) {
+  document.querySelector("#scan-roaster-preview").textContent = details.roaster;
+  document.querySelector("#scan-origin-preview").textContent = details.origin;
+  document.querySelector("#scan-result").innerHTML = `
+    <h3>${details.roaster}</h3>
+    <div class="result-grid">
+      <span class="tag">${details.origin}</span>
+      <span class="tag">${details.process}</span>
+      <span class="tag">${details.variety}</span>
+      <span class="tag">${details.roast}</span>
+    </div>
+    <p>${details.notes}</p>
+    <button class="primary-button" type="button" id="save-scan">Save to Pantry</button>
+  `;
 }
 
 navItems.forEach((item) => {
@@ -322,26 +346,53 @@ document.querySelectorAll("#temp-input, #yield-input").forEach((input) => {
   });
 });
 
+document.querySelector("#bag-image").addEventListener("change", (event) => {
+  const file = event.currentTarget.files[0];
+  if (!file) return;
+  const imageUrl = URL.createObjectURL(file);
+  const scanFrame = document.querySelector(".scan-frame");
+  scanFrame.style.backgroundImage = `linear-gradient(rgba(11, 10, 8, 0.18), rgba(11, 10, 8, 0.5)), url("${imageUrl}")`;
+  scanFrame.classList.add("has-image");
+  readBagImage(file);
+});
+
+async function readBagImage(file) {
+  const status = document.querySelector("#image-status");
+  status.textContent = `${file.name} ready. Reading visible label text...`;
+  if (!window.Tesseract) {
+    status.textContent = "Photo added. OCR is unavailable offline, so paste any readable label text below.";
+    return;
+  }
+
+  try {
+    const result = await window.Tesseract.recognize(file, "eng");
+    const scannedText = result.data.text.replace(/\s+/g, " ").trim();
+    if (!scannedText) {
+      status.textContent = "Photo added, but no clear label text was found. Type the readable bag text below.";
+      return;
+    }
+    document.querySelector("#bag-text").value = scannedText;
+    status.textContent = "Photo scanned. Review the detected text, then scan bag details.";
+  } catch {
+    status.textContent = "Photo added, but OCR could not read it. Type the readable bag text below.";
+  }
+}
+
 document.querySelector("#extract-button").addEventListener("click", () => {
+  const bagText = document.querySelector("#bag-text").value.trim();
+  if (!bagText) {
+    document.querySelector("#scan-result").innerHTML = "<p>Add the readable text from the coffee bag first, then scan again.</p>";
+    return;
+  }
+  renderScanResult(extractBagDetails(bagText));
+});
+
+document.querySelector("#scan-result").addEventListener("click", (event) => {
+  if (event.target.id !== "save-scan") return;
   const details = extractBagDetails(document.querySelector("#bag-text").value);
-  document.querySelector("#scan-roaster-preview").textContent = details.roaster;
-  document.querySelector("#scan-origin-preview").textContent = details.origin;
-  document.querySelector("#scan-result").innerHTML = `
-    <h3>${details.roaster}</h3>
-    <div class="result-grid">
-      <span class="tag">${details.origin}</span>
-      <span class="tag">${details.process}</span>
-      <span class="tag">${details.variety}</span>
-      <span class="tag">${details.roast}</span>
-    </div>
-    <p>${details.notes}</p>
-    <button class="primary-button" type="button" id="save-scan">Save to Pantry</button>
-  `;
-  document.querySelector("#save-scan").addEventListener("click", () => {
-    beans.unshift({ roaster: details.roaster, bean: details.origin, origin: details.origin, variety: details.variety, process: details.process, notes: details.notes });
-    renderBeans();
-    showScreen("pantry");
-  });
+  beans.unshift({ roaster: details.roaster, bean: details.origin, origin: details.origin, variety: details.variety, process: details.process, notes: details.notes });
+  renderBeans();
+  showScreen("pantry");
 });
 
 document.querySelector("#bean-form").addEventListener("submit", (event) => {

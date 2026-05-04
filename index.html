@@ -139,13 +139,21 @@
             </div>
           </div>
 
+          <label class="file-drop" for="bag-image">
+            <input id="bag-image" type="file" accept="image/*" />
+            <span>Upload bag photo</span>
+            <small id="image-status">Optional: add a photo, then paste or type the readable label text below.</small>
+          </label>
+
           <label class="label-input">
-            Paste bag text
+            Bag label text
             <textarea id="bag-text">North Star Coffee, Ethiopia Guji, natural process, heirloom varietal, light roast, notes of blueberry, jasmine and citrus.</textarea>
           </label>
 
-          <button class="primary-button" type="button" id="extract-button">Extract Details</button>
-          <div class="result-card" id="scan-result"></div>
+          <button class="primary-button" type="button" id="extract-button">Scan Bag Details</button>
+          <div class="result-card" id="scan-result" aria-live="polite">
+            <p>Add a bag photo or label text, then scan to identify the coffee details.</p>
+          </div>
         </section>
 
         <section class="screen" id="screen-pantry" aria-labelledby="pantry-title">
@@ -199,6 +207,7 @@
         </nav>
       </section>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
