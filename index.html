@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flat White</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="phone" aria-label="Flat White coffee app">
+        <header class="status-bar" aria-label="Phone status">
+          <span>09:41</span>
+          <span class="status-icons">5G 100</span>
+        </header>
+
+        <section class="screen cover-screen active" id="screen-cover" aria-labelledby="cover-title">
+          <div class="coffee-words" aria-hidden="true">
+            <span>Espresso</span>
+            <span>Cortado</span>
+            <span>Cafezinho</span>
+            <span>Kahve</span>
+            <span>Buna</span>
+            <span>Kopi</span>
+            <span>Qahwa</span>
+            <span>Fika</span>
+            <span>Macchiato</span>
+            <span>Affogato</span>
+            <span>Filter</span>
+            <span>Crema</span>
+            <span>Geisha</span>
+            <span>Washed</span>
+            <span>Natural</span>
+            <span>Omniroast</span>
+            <span>Yirgacheffe</span>
+            <span>Arabica</span>
+            <span>Robusta</span>
+            <span>Pour-over</span>
+            <span>Flat White</span>
+            <span>Ristretto</span>
+            <span>Batch Brew</span>
+            <span>Cupping</span>
+          </div>
+
+          <div class="cover-hero">
+            <div class="cover-mark" aria-hidden="true">
+              <span></span>
+            </div>
+            <p class="kicker">Coffee library</p>
+            <h1 id="cover-title">Flat White</h1>
+            <p class="cover-copy">Brew guides, extraction profiles, bean notes and bag scanning in one quiet coffee workspace.</p>
+          </div>
+
+          <div class="cover-actions">
+            <button class="primary-button" type="button" data-nav="brew">Start Brewing</button>
+            <button class="secondary-button" type="button" data-nav="scan">Scan Coffee Bag</button>
+          </div>
+        </section>
+
+        <section class="screen" id="screen-brew" aria-labelledby="brew-title">
+          <div class="top-row">
+            <div>
+              <p class="kicker">Flat White</p>
+              <h1 id="brew-title">Prepare Coffee</h1>
+            </div>
+            <button class="icon-button" type="button" aria-label="Open pantry" data-nav="pantry">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1.2 12H7.2L6 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
+            </button>
+          </div>
+
+          <label class="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+            <input id="method-search" type="search" placeholder="Brew guide, method, roaster..." />
+          </label>
+
+          <div class="section-heading">
+            <div>
+              <h2>Brew Methods</h2>
+              <p>Select a guide to start</p>
+            </div>
+            <button class="pill-button" type="button" data-nav="profiles">Add +</button>
+          </div>
+
+          <div class="method-grid" id="method-grid"></div>
+        </section>
+
+        <section class="screen" id="screen-guide" aria-labelledby="guide-title">
+          <button class="back-button" type="button" data-nav="brew">Back</button>
+          <article class="guide-card">
+            <div class="method-orb large" id="guide-icon"></div>
+            <p class="kicker" id="guide-family">Filter</p>
+            <h1 id="guide-title">Hario V60</h1>
+            <p id="guide-summary"></p>
+            <dl class="stats-row">
+              <div><dt>Ratio</dt><dd id="guide-ratio"></dd></div>
+              <div><dt>Grind</dt><dd id="guide-grind"></dd></div>
+              <div><dt>Time</dt><dd id="guide-time"></dd></div>
+            </dl>
+          </article>
+
+          <div class="tab-row" role="tablist" aria-label="Guide details">
+            <button class="tab active" type="button" data-tab="steps">Steps</button>
+            <button class="tab" type="button" data-tab="extraction">Extraction</button>
+            <button class="tab" type="button" data-tab="beans">Bean Fit</button>
+          </div>
+
+          <section class="tab-panel active" id="tab-steps">
+            <ol class="step-list" id="guide-steps"></ol>
+          </section>
+          <section class="tab-panel" id="tab-extraction">
+            <div class="extraction-panel">
+              <label>Water temp <input id="temp-input" type="range" min="85" max="98" value="93" /></label>
+              <label>Yield target <input id="yield-input" type="range" min="180" max="760" value="300" /></label>
+              <div class="profile-readout">
+                <span id="temp-readout">93 C</span>
+                <span id="yield-readout">300 g</span>
+                <span id="tds-readout">1.42% TDS</span>
+              </div>
+            </div>
+          </section>
+          <section class="tab-panel" id="tab-beans">
+            <div class="bean-fit" id="bean-fit"></div>
+          </section>
+        </section>
+
+        <section class="screen" id="screen-scan" aria-labelledby="scan-title">
+          <div class="top-row">
+            <div>
+              <p class="kicker">Bag Scanner</p>
+              <h1 id="scan-title">Identify Beans</h1>
+            </div>
+            <button class="icon-button" type="button" aria-label="Start scan">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 12h8"/></svg>
+            </button>
+          </div>
+
+          <div class="scan-frame">
+            <div class="scan-line"></div>
+            <div class="bag-art">
+              <span>Single Origin</span>
+              <strong id="scan-roaster-preview">North Star</strong>
+              <small id="scan-origin-preview">Ethiopia • Guji</small>
+            </div>
+          </div>
+
+          <label class="label-input">
+            Paste bag text
+            <textarea id="bag-text">North Star Coffee, Ethiopia Guji, natural process, heirloom varietal, light roast, notes of blueberry, jasmine and citrus.</textarea>
+          </label>
+
+          <button class="primary-button" type="button" id="extract-button">Extract Details</button>
+          <div class="result-card" id="scan-result"></div>
+        </section>
+
+        <section class="screen" id="screen-pantry" aria-labelledby="pantry-title">
+          <div class="top-row">
+            <div>
+              <p class="kicker">Personal Pantry</p>
+              <h1 id="pantry-title">Saved Beans</h1>
+            </div>
+            <button class="pill-button" type="button" data-nav="scan">Scan</button>
+          </div>
+          <form class="bean-form" id="bean-form">
+            <input name="roaster" placeholder="Roaster" required />
+            <input name="bean" placeholder="Bean / lot" required />
+            <input name="origin" placeholder="Origin, region" required />
+            <input name="variety" placeholder="Variety" />
+            <input name="process" placeholder="Process" />
+            <input name="notes" placeholder="Flavour notes" />
+            <button class="primary-button" type="submit">Save Bean</button>
+          </form>
+          <div class="bean-list" id="bean-list"></div>
+        </section>
+
+        <section class="screen" id="screen-profiles" aria-labelledby="profiles-title">
+          <div class="top-row">
+            <div>
+              <p class="kicker">Custom Profiles</p>
+              <h1 id="profiles-title">Extraction Data</h1>
+            </div>
+            <button class="pill-button" type="button" data-nav="brew">Done</button>
+          </div>
+          <div class="profile-list" id="profile-list"></div>
+        </section>
+
+        <nav class="bottom-nav" aria-label="Primary navigation">
+          <button class="nav-item active" type="button" data-nav="brew">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14l-2 8a5 5 0 0 1-10 0L5 4Z"/><path d="M8 20h8"/><path d="M10 16v4h4v-4"/></svg>
+            Brew
+          </button>
+          <button class="nav-item" type="button" data-nav="scan">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V5a1 1 0 0 1 1-1h2"/><path d="M17 4h2a1 1 0 0 1 1 1v2"/><path d="M20 17v2a1 1 0 0 1-1 1h-2"/><path d="M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M7 12h10"/></svg>
+            Scan
+          </button>
+          <button class="nav-item" type="button" data-nav="pantry">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1.2 12H7.2L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+            Pantry
+          </button>
+          <button class="nav-item" type="button" data-nav="profiles">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="17" r="2"/></svg>
+            Data
+          </button>
+        </nav>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
